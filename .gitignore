@@ -1,5 +1,24 @@
+# Dependencias
 node_modules
+
+# Builds
 dist
 dev-dist
+
+# Variables de entorno (solo se sube la plantilla)
 .env
+.env.*
+!.env.example
+
+# Capturas y resultados de pruebas
 screenshots
+test-results
+playwright-report
+coverage
+
+# Logs y archivos del sistema o del editor
+*.log
+npm-debug.log*
+.DS_Store
+.vscode
+.idea
