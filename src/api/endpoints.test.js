@@ -130,6 +130,13 @@ describe('foto (multipart)', () => {
 });
 
 describe('PDF (blob con token)', () => {
+	// Con Node 22+ el Blob de jsdom no trae .text(); FileReader funciona en cualquier versión.
+	const readBlob = blob => new Promise((resolve, reject) => {
+		const reader = new FileReader();
+		reader.onload = () => resolve(reader.result);
+		reader.onerror = () => reject(reader.error);
+		reader.readAsText(blob);
+	});
 	const pdfResponse = filename => new Response('%PDF-1.4', {
 		status: 200, headers: { 'Content-Type': 'application/pdf', ...(filename ? { 'Content-Disposition': `inline; filename="${filename}"` } : {}) },
 	});
@@ -142,7 +149,7 @@ describe('PDF (blob con token)', () => {
 		expect(sent.headers.Authorization).toBe('Bearer tok');
 		expect(sent.headers.Accept).toMatch(/application\/pdf/);
 		expect(result.filename).toBe('credencial-5.pdf');
-		expect(await result.blob.text()).toBe('%PDF-1.4');
+		expect(await readBlob(result.blob)).toBe('%PDF-1.4');
 	});
 
 	it('lote por grado (y sin grado = todos)', async () => {
